@@ -13,7 +13,6 @@ from supabase import create_client, Client
 # ============================================================
 app = Flask(__name__)
 
-
 @app.route('/')
 def health_check():
     # UptimeRobot will ping this endpoint to keep the server awake
