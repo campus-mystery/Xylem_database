@@ -353,19 +353,14 @@ def run_continuous_loop():
 
 
 # ============================================================
-# ENTRY POINT
+# ENTRY POINT & WORKER STARTUP
 # ============================================================
 
-if __name__ == "__main__":
-    # 1. Start the continuous scraper loop in a background thread
-    worker_thread = threading.Thread(target=run_continuous_loop, daemon=True)
-    worker_thread.start()
+# Start the background thread when Gunicorn imports the file
+worker_thread = threading.Thread(target=run_continuous_loop, daemon=True)
+worker_thread.start()
 
-    # 2. Start the Flask server on the main thread for Render health checks
+if __name__ == "__main__":
+    # Local testing fallback
     port = int(os.environ.get("PORT", 5000))
-    # Note: When deploying on Render using Gunicorn, the `app.run` below
-    # might not be called, but the app object will be served by Gunicorn.
-    # To ensure the background thread starts when gunicorn imports the app,
-    # the thread needs to be started either inside the gunicorn config
-    # or before `app.run()`. This setup works out of the box for most basic setups.
     app.run(host="0.0.0.0", port=port)
